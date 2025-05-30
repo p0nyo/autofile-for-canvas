@@ -28,6 +28,11 @@ z-index: 1000;
 box-shadow: 0 1px 5px rgba(0,0,0,0.1);
 }
 
+#logo-image {
+    height: 60px;
+    width: auto;
+}
+
 label { display: block; margin-bottom: 6px; }
 
 .checkbox-label { margin-left: 6px; }

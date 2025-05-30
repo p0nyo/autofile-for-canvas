@@ -3,7 +3,7 @@
     "name": "AutoFile for Canvas",
     "version": "1.0",
     "description": "Select and batch download attachments on Canvas.",
-    "permissions": ["scripting", "storage"],
+    "permissions": ["storage"],
     "action": {
         "default_popup": "popup.html",
         "default_icon": {
