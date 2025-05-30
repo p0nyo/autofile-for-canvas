@@ -2,11 +2,8 @@
     "manifest_version": 3,
     "name": "AutoFile for Canvas",
     "version": "1.0",
-    "description": "Select and download attachments on Canvas.",
-    "permissions": ["downloads", "activeTab", "scripting", "storage"],
-    "host_permissions": [
-      "https://canvas.auckland.ac.nz/*"
-    ],
+    "description": "Select and batch download attachments on Canvas.",
+    "permissions": ["scripting", "storage"],
     "action": {
         "default_popup": "popup.html",
         "default_icon": {
@@ -17,13 +14,10 @@
     "content_scripts": [
       {
         "matches": ["<all_urls>"],
-        "js": ["content.js"],
+        "js": ["index.js"],
         "type": "module"
       }
     ],
-    "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self';"
-    },
     "web_accessible_resources": [{
         "resources": ["libs/*", "public/*"],
         "matches": ["<all_urls>"]

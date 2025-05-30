@@ -1,6 +1,8 @@
+const FETCH_LIMIT = 30;
+const SELECTOR_MODULE_LINKS = 'a.ig-title.title.item_link';
 
 async function getModuleItemLinks() {
-    const anchors = document.querySelectorAll('a.ig-title.title.item_link');
+    const anchors = document.querySelectorAll(SELECTOR_MODULE_LINKS);
     
     const moduleItems = Array.from(anchors).map((a) => ({
         url: new URL(a.getAttribute('href'), window.location.origin).toString(),
@@ -60,12 +62,12 @@ function extractPdfLinkFromHTML(html, baseUrl) {
 }
 
 async function initialise() {
-    const moduleItems = await getModuleItemLinks(); // now contains { url, text }
+    const moduleItems = await getModuleItemLinks();
     console.log("Module Items:", moduleItems);
 
     const modulePages = await fetchModulePagesWithLimit(
         moduleItems.map(item => item.url),
-        30
+        FETCH_LIMIT
     );
 
     const pdfLinks = modulePages
@@ -85,34 +87,9 @@ async function initialise() {
     chrome.storage.local.set({ pdfLinks });
 }
 
-
 window.addEventListener("load", () => {
     chrome.storage.local.clear(() => {
         console.log("Storage cleared on browser startup");
     });
     initialise();
 });
-
-
-{/* 
-    <span class="item_name">
-    <a title="Whārangi kāinga | Home Page" class="ig-title title item_link" href="/courses/120717/modules/items/2352694">
-        Whārangi kāinga | Home Page
-    </a> 
-    </span>    
-
-
-    1. find <a> tag with this class name: ig-title title item_link 
-
-    2. for each of these items check the href and go to URL + href
-
-    3. for each of these URLs, check for an <a> tag with a download="true"
-
-    4. if found, store href in the google local store
-
-    5. use a pdf reader module to view it in the extension popup
-
-    6. give users chance to select which pdfs they want
-
-    7. batch download pdfs to a zip file 
-*/}
