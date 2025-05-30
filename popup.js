@@ -1,38 +1,57 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("pdf-list");
-  const spinner = document.getElementById("spinner");
+  const loaderOverlay = document.getElementById("loader-overlay");
   const selectAllCheckbox = document.getElementById("select-all");
   const downloadBtn = document.getElementById("download-zip");
 
   let currentPdfLinksJSON = "";
 
   function renderPdfList(pdfLinks) {
-    // Clear existing content
     container.innerHTML = "";
-
-    if (!pdfLinks || pdfLinks.length === 0) {
-      container.textContent = "No PDFs found.";
-      return;
-    }
 
     pdfLinks.forEach((link, index) => {
       const wrapper = document.createElement("div");
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "center";
+      wrapper.style.padding = "8px";
+      wrapper.style.marginBottom = "6px";
+      wrapper.style.border = "1px solid #ccc";
+      wrapper.style.backgroundColor = "#f9f9f9";
+      wrapper.style.transition = "background-color 0.2s";
+
+      wrapper.addEventListener("mouseenter", () => {
+        wrapper.style.backgroundColor = "#fcc6c2";
+      });
+
+      wrapper.addEventListener("mouseleave", () => {
+        wrapper.style.backgroundColor = "#f9f9f9";
+      });
 
       const checkbox = document.createElement("input");
       checkbox.type = "checkbox";
       checkbox.className = "pdf-checkbox";
       checkbox.dataset.index = index;
+      checkbox.style.accentColor = "red";
 
-      const a = document.createElement("a");
-      a.href = link.url;
-      a.textContent = link.text.replace(/^Download\s*/, "");
-      a.target = "_blank";
-      a.style.marginLeft = "8px";
+      const p = document.createElement("p");
+      p.textContent = link.text.replace(/^Download\s*/, "");
+      p.style.pointerEvents = "none";
+      p.style.fontSize = "16px";
+      p.style.fontWeight = "500";
+      wrapper.addEventListener("click", (e) => {
+        if (e.target !== p) {
+          checkbox.checked = !checkbox.checked;
+        }
+      })
 
       wrapper.appendChild(checkbox);
-      wrapper.appendChild(a);
+      wrapper.appendChild(p);
       container.appendChild(wrapper);
+
+    
+
     });
+
 
     // Ensure select-all toggles all
     selectAllCheckbox.checked = false;
@@ -44,26 +63,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadAndRender() {
     chrome.storage.local.get("pdfLinks", ({ pdfLinks }) => {
+      console.log(pdfLinks);
       const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
       if (newPdfLinksJSON !== currentPdfLinksJSON) {
         currentPdfLinksJSON = newPdfLinksJSON;
-        spinner.style.display = "none";
         renderPdfList(pdfLinks);
       }
     });
   }
 
-  // Initial load
-  spinner.style.display = "block";
-  loadAndRender();
+  setInterval(() => {
+    loadAndRender();
+  }, 100);
 
-  // Re-check every 3 seconds
-  setInterval(loadAndRender, 1000);
 
   downloadBtn.addEventListener("click", async () => {
+    loaderOverlay.style.display = "block";
+    document.body.style.overflow = "hidden";
     const checkboxes = container.querySelectorAll(".pdf-checkbox:checked");
     if (checkboxes.length === 0) {
       alert("No PDFs selected.");
+      // loaderOverlay.style.display = "none";
       return;
     }
 
@@ -76,9 +96,11 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const res = await fetch(url, { credentials: "include" });
         const blob = await res.blob();
+        loaderOverlay.style.display = "none";
         return { filename, blob };
       } catch (err) {
         console.error("Failed to fetch:", url, err);
+        loaderOverlay.style.display = "none";
         return null;
       }
     });
@@ -98,6 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const zipBlob = await zip.generateAsync({ type: "blob" });
-    saveAs(zipBlob, "canvas_batch_download.zip");
+    saveAs(zipBlob, "canvas_files.zip");
   });
 });

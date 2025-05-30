@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Canvas Batch Download V3",
+    "name": "Autofile for Canvas",
     "version": "1.0",
-    "description": "Download all PDF links from a Canvas we bpage.",
+    "description": "Select and download attachments on Canvas.",
     "permissions": ["downloads", "activeTab", "scripting", "storage"],
     "host_permissions": [
       "https://canvas.auckland.ac.nz/*"
@@ -21,7 +21,7 @@
       "extension_pages": "script-src 'self'; object-src 'self';"
     },
     "web_accessible_resources": [{
-      "resources": ["libs/*"],
+      "resources": ["libs/*", "public/*"],
       "matches": ["<all_urls>"]
     }]
 }

@@ -1,14 +1,3 @@
-function isCanvasCoursePage() {
-    const isCanvasHost =
-      location.hostname.includes("canvas") ||
-      location.hostname.includes("instructure");
-  
-    // const isCourseSubpage = location.pathname.includes("/courses/");
-    const isCourseSubpage = location.pathname.match(/^\/courses\/\d+\/modules/);
-
-  
-    return isCanvasHost && isCourseSubpage;
-}
 
 async function getModuleItemLinks() {
     const anchors = document.querySelectorAll('a.ig-title.title.item_link');
@@ -20,7 +9,6 @@ async function getModuleItemLinks() {
 
     return moduleItems;
 }
-
 
 async function fetchModulePagesWithLimit(urls, limit = 5) {
     const results = [];
@@ -48,7 +36,6 @@ async function fetchModulePagesWithLimit(urls, limit = 5) {
     return results.filter(Boolean);
 }
 
-
 function extractPdfLinkFromHTML(html, baseUrl) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
@@ -72,42 +59,39 @@ function extractPdfLinkFromHTML(html, baseUrl) {
     return null;
 }
 
-
-window.addEventListener("load", () => {
-  chrome.storage.local.clear(() => {
-    console.log("Extension storage cleared on page reload");
-  });
-});
-
-// Targets custom canvas domain names and default instructure domain names
-if (isCanvasCoursePage()) {
-    console.log("WORKING!")
-}   
-
-(async () => {
+async function initialise() {
     const moduleItems = await getModuleItemLinks(); // now contains { url, text }
-    console.log(moduleItems);
+    console.log("Module Items:", moduleItems);
 
-    const modulePages = await fetchModulePagesWithLimit(moduleItems.map(item => item.url), 30);
+    const modulePages = await fetchModulePagesWithLimit(
+        moduleItems.map(item => item.url),
+        30
+    );
 
     const pdfLinks = modulePages
         .map(({ html, url }, index) => {
-            const result = extractPdfLinkFromHTML(html, url);
-            if (!result) return null;
-            const { pdfUrl, filename } = result;
-            if (!pdfUrl || !filename) return null;
+        const result = extractPdfLinkFromHTML(html, url);
+        if (!result) return null;
 
-            const text = moduleItems[index].text;
-            return { text, url: pdfUrl, filename };
+        const { pdfUrl, filename } = result;
+        if (!pdfUrl || !filename) return null;
+
+        const text = moduleItems[index].text;
+        return { text, url: pdfUrl, filename };
         })
         .filter(link => link !== null);
 
     console.log("Found PDF Links:", pdfLinks);
-    chrome.storage.local.set({ pdfLinks }); 
-})();
+    chrome.storage.local.set({ pdfLinks });
+}
 
 
-
+window.addEventListener("load", () => {
+    chrome.storage.local.clear(() => {
+        console.log("Storage cleared on browser startup");
+    });
+    initialise();
+});
 
 
 {/* 
