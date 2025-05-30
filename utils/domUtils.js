@@ -25,6 +25,7 @@ export function renderPdfList(container, pdfLinks) {
     checkbox.className = "pdf-checkbox";
     checkbox.dataset.index = index;
     checkbox.style.accentColor = "red";
+    checkbox.style.marginRight = "12px";
 
     const p = document.createElement("p");
     p.textContent = link.text.replace(/^Download\s*/, "");
