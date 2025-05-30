@@ -1,16 +1,14 @@
-
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("pdf-list");
   const spinner = document.getElementById("spinner");
   const selectAllCheckbox = document.getElementById("select-all");
   const downloadBtn = document.getElementById("download-zip");
 
-  // Show spinner
-  spinner.style.display = "block";
+  let currentPdfLinksJSON = "";
 
-  chrome.storage.local.get("pdfLinks", ({ pdfLinks }) => {
-    // Hide spinner after data retrieval
-    spinner.style.display = "none";
+  function renderPdfList(pdfLinks) {
+    // Clear existing content
+    container.innerHTML = "";
 
     if (!pdfLinks || pdfLinks.length === 0) {
       container.textContent = "No PDFs found.";
@@ -24,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
       checkbox.type = "checkbox";
       checkbox.className = "pdf-checkbox";
       checkbox.dataset.index = index;
-      
 
       const a = document.createElement("a");
       a.href = link.url;
@@ -37,25 +34,44 @@ document.addEventListener("DOMContentLoaded", () => {
       container.appendChild(wrapper);
     });
 
-
+    // Ensure select-all toggles all
+    selectAllCheckbox.checked = false;
     selectAllCheckbox.addEventListener("change", () => {
       const checkboxes = container.querySelectorAll(".pdf-checkbox");
       checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
     });
+  }
 
-    downloadBtn.addEventListener("click", async () => {
-      const checkboxes = container.querySelectorAll(".pdf-checkbox:checked");
-      if (checkboxes.length === 0) {
-        alert("No PDFs selected.");
-        return;
+  async function loadAndRender() {
+    chrome.storage.local.get("pdfLinks", ({ pdfLinks }) => {
+      const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
+      if (newPdfLinksJSON !== currentPdfLinksJSON) {
+        currentPdfLinksJSON = newPdfLinksJSON;
+        spinner.style.display = "none";
+        renderPdfList(pdfLinks);
       }
+    });
+  }
+
+  // Initial load
+  spinner.style.display = "block";
+  loadAndRender();
+
+  // Re-check every 3 seconds
+  setInterval(loadAndRender, 1000);
+
+  downloadBtn.addEventListener("click", async () => {
+    const checkboxes = container.querySelectorAll(".pdf-checkbox:checked");
+    if (checkboxes.length === 0) {
+      alert("No PDFs selected.");
+      return;
+    }
 
     const zip = new JSZip();
 
-    // Create array of fetch promises
     const fetchPromises = Array.from(checkboxes).map(async (cb) => {
       const idx = cb.dataset.index;
-      const { url, filename } = pdfLinks[idx];
+      const { url, filename } = JSON.parse(currentPdfLinksJSON)[idx];
 
       try {
         const res = await fetch(url, { credentials: "include" });
@@ -63,16 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return { filename, blob };
       } catch (err) {
         console.error("Failed to fetch:", url, err);
-        return null; // skip failed fetches
+        return null;
       }
     });
 
-    // Wait for all fetches to finish
     const results = await Promise.all(fetchPromises);
 
-    console.log(results);
-
-    // Add all blobs to the zip
     results.forEach(file => {
       if (file) {
         zip.file(file.filename, file.blob);
@@ -82,15 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Files in zip:");
     let idx = 1;
     Object.keys(zip.files).forEach((filename) => {
-      console.log(idx + "-", filename);
-      idx += 1;
+      console.log(`${idx++} - ${filename}`);
     });
 
-
-    // Generate and trigger download
     const zipBlob = await zip.generateAsync({ type: "blob" });
     saveAs(zipBlob, "canvas_batch_download.zip");
-
-    });
   });
 });
