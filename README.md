@@ -1,1 +1,1 @@
-# canvas-batch-download-v3
+# AutoFile for Canvas
