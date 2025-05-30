@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
       checkbox.type = "checkbox";
       checkbox.className = "pdf-checkbox";
       checkbox.dataset.index = index;
+      
 
       const a = document.createElement("a");
       a.href = link.url;
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       wrapper.appendChild(a);
       container.appendChild(wrapper);
     });
+
 
     selectAllCheckbox.addEventListener("change", () => {
       const checkboxes = container.querySelectorAll(".pdf-checkbox");
@@ -48,24 +50,47 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const zip = new JSZip();
+    const zip = new JSZip();
 
-      for (const cb of checkboxes) {
-        const idx = cb.dataset.index;
-        const { url, text } = pdfLinks[idx];
+    // Create array of fetch promises
+    const fetchPromises = Array.from(checkboxes).map(async (cb) => {
+      const idx = cb.dataset.index;
+      const { url, filename } = pdfLinks[idx];
 
-        try {
-          const res = await fetch(url, { credentials: "include" });
-          const blob = await res.blob();
-          const cleanName = text.replace(/^Download\s*/, "").replace(/[^a-z0-9.\-_\s]/gi, "_") || `file${idx}.pdf`;
-          zip.file(cleanName, blob);
-        } catch (err) {
-          console.error("Failed to fetch:", url, err);
-        }
+      try {
+        const res = await fetch(url, { credentials: "include" });
+        const blob = await res.blob();
+        return { filename, blob };
+      } catch (err) {
+        console.error("Failed to fetch:", url, err);
+        return null; // skip failed fetches
       }
+    });
 
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      saveAs(zipBlob, "canvas_batch_download.zip");
+    // Wait for all fetches to finish
+    const results = await Promise.all(fetchPromises);
+
+    console.log(results);
+
+    // Add all blobs to the zip
+    results.forEach(file => {
+      if (file) {
+        zip.file(file.filename, file.blob);
+      }
+    });
+
+    console.log("Files in zip:");
+    let idx = 1;
+    Object.keys(zip.files).forEach((filename) => {
+      console.log(idx + "-", filename);
+      idx += 1;
+    });
+
+
+    // Generate and trigger download
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+    saveAs(zipBlob, "canvas_batch_download.zip");
+
     });
   });
 });

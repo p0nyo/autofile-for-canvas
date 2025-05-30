@@ -64,7 +64,9 @@ function extractPdfLinkFromHTML(html, baseUrl) {
     if (anchor) {
         const href = anchor.getAttribute("href");
         const pdfUrl = new URL(href, baseUrl).toString();
-        return pdfUrl;
+        const filename = anchor.textContent.trim().replace(/^Download\s+/i, "");
+
+        return { pdfUrl, filename };
     }
 
     return null;
@@ -90,11 +92,13 @@ if (isCanvasCoursePage()) {
 
     const pdfLinks = modulePages
         .map(({ html, url }, index) => {
-            const pdfUrl = extractPdfLinkFromHTML(html, url);
-            if (!pdfUrl) return null;
+            const result = extractPdfLinkFromHTML(html, url);
+            if (!result) return null;
+            const { pdfUrl, filename } = result;
+            if (!pdfUrl || !filename) return null;
 
             const text = moduleItems[index].text;
-            return { text, url: pdfUrl };
+            return { text, url: pdfUrl, filename };
         })
         .filter(link => link !== null);
 
