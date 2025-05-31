@@ -15,7 +15,7 @@ export function renderPdfList(container, pdfLinks) {
     `;
 
     wrapper.addEventListener("mouseenter", () => {
-      wrapper.style.backgroundColor = "#fcc6c2";
+      wrapper.style.backgroundColor = "#e4e4e4";
     });
     wrapper.addEventListener("mouseleave", () => {
       wrapper.style.backgroundColor = "#f9f9f9";
