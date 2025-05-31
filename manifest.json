@@ -19,7 +19,7 @@
       }
     ],
     "web_accessible_resources": [{
-        "resources": ["libs/*", "public/*"],
+        "resources": ["libs/*", "public/*", "fonts/*"],
         "matches": ["<all_urls>"]
     }],
     "icons": {

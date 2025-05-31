@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
 body {
 scrollbar-width: none;
 width: 500px; 
@@ -5,10 +12,11 @@ min-height: 800px;
 margin: 0;
 padding: 10px;
 padding-top: 80px;
-padding-bottom: 60px;
-font-family: Arial, sans-serif;
+padding-bottom: 90px;
+font-family: 'Montserrat', sans-serif;
 overflow: auto;
 }
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
 display: none;
@@ -60,6 +68,7 @@ z-index: 9999;
 
 #loader-text {
 font-size: 15px;
+font-weight: 500;
 top: 55%;
 }
 
@@ -116,4 +125,12 @@ accent-color: red;
 margin-right: 20px;
 padding: 8px 16px;
 font-size: 14px;
+font-weight: 500;
+background-color: #fcc6c2;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+#download-zip:hover {
+    background-color: #ff4e41;
 }

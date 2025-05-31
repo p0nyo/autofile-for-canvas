@@ -11,6 +11,7 @@ export function renderPdfList(container, pdfLinks) {
       border: 1px solid #ccc;
       background-color: #f9f9f9;
       transition: background-color 0.2s;
+      cursor: pointer;
     `;
 
     wrapper.addEventListener("mouseenter", () => {
@@ -31,7 +32,7 @@ export function renderPdfList(container, pdfLinks) {
     p.textContent = link.text.replace(/^Download\s*/, "");
     p.style.pointerEvents = "none";
     p.style.fontSize = "16px";
-    p.style.fontWeight = "500";
+    p.style.fontWeight = "400";
 
     wrapper.addEventListener("click", (e) => {
       if (e.target !== p) {
