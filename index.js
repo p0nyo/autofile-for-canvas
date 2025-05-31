@@ -92,4 +92,4 @@ window.addEventListener("load", () => {
         console.log("Storage cleared on browser startup");
     });
     initialise();
-});
+})

@@ -19,10 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadAndRender() {
       const pdfLinks = await getPdfLinks();
-      const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
-      if (newPdfLinksJSON !== currentPdfLinksJSON) {
-        currentPdfLinksJSON = newPdfLinksJSON;
-        renderPdfList(container, pdfLinks);
+
+      if (pdfLinks.length === 0) {
+        console.log("Loader Shown.")
+        showLoader();
+      } else {
+        const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
+        if (newPdfLinksJSON !== currentPdfLinksJSON) {
+          currentPdfLinksJSON = newPdfLinksJSON;
+          renderPdfList(container, pdfLinks);
+        }
+        console.log("Loader Hidden.")
+        hideLoader();
       }
   }
 

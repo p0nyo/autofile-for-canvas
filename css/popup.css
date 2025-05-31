@@ -1,6 +1,7 @@
 body {
 scrollbar-width: none;
-width: 500px;  
+width: 500px; 
+height: 800px; 
 margin: 0;
 padding: 10px;
 padding-top: 80px;
