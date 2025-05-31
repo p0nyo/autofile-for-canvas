@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("download-zip");
 
   let currentPdfLinksJSON = "";
+  let downloadingState = false;
   
   selectAllCheckbox.checked = false;
   selectAllCheckbox.addEventListener("change", () => {
@@ -21,25 +22,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const pdfLinks = await getPdfLinks();
 
       if (pdfLinks.length === 0) {
-        console.log("Loader Shown.")
         showLoader();
       } else {
+        console.log(pdfLinks);
         const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
           renderPdfList(container, pdfLinks);
         }
-        console.log("Loader Hidden.")
         hideLoader();
       }
   }
 
   setInterval(() => {
-    loadAndRender();
+    if (!downloadingState) {
+      loadAndRender();
+    }
   }, 100);
 
 
   downloadBtn.addEventListener("click", async () => {
+    downloadingState = true;
     const checkboxes = container.querySelectorAll(".pdf-checkbox:checked");
     if (checkboxes.length === 0) {
       alert("No PDFs selected.");
@@ -50,5 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const pdfLinks = JSON.parse(currentPdfLinksJSON);
     await downloadSelectedPdfs(checkboxes, pdfLinks);
     hideLoader();
+    downloadingState = false;
   });
 });

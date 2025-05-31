@@ -84,12 +84,11 @@ async function initialise() {
         .filter(link => link !== null);
 
     console.log("Found PDF Links:", pdfLinks);
-    chrome.storage.local.set({ pdfLinks });
+    chrome.storage.local.clear(() => {
+        chrome.storage.local.set({ pdfLinks });
+    })
 }
 
 window.addEventListener("load", () => {
-    chrome.storage.local.clear(() => {
-        console.log("Storage cleared on browser startup");
-    });
     initialise();
-})
+});
