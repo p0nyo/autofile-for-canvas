@@ -5,3 +5,11 @@ export async function getPdfLinks() {
     });
   });
 }
+
+export async function getCourseTitle() {
+  return new Promise((resolve) => {
+    chrome.storage.local.get("courseTitle", ({ courseTitle }) => {
+      resolve(courseTitle || "");
+    });
+  });
+}

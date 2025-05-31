@@ -1,5 +1,5 @@
 import { renderPdfList } from "./utils/domUtils.js";
-import { getPdfLinks } from "./utils/storage.js";
+import { getPdfLinks, getCourseTitle } from "./utils/storage.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
 import { showLoader, hideLoader } from "./utils/loader.js";
 
@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (pdfLinks.length === 0) {
         showLoader();
       } else {
-        console.log(pdfLinks);
         const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
@@ -38,11 +37,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!downloadingState) {
       loadAndRender();
     }
-  }, 100);
+  }, 1000);
 
 
   downloadBtn.addEventListener("click", async () => {
     downloadingState = true;
+
+    const courseTitle = await getCourseTitle();
     const checkboxes = container.querySelectorAll(".pdf-checkbox:checked");
     if (checkboxes.length === 0) {
       alert("No PDFs selected.");
@@ -51,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showLoader();
     const pdfLinks = JSON.parse(currentPdfLinksJSON);
-    await downloadSelectedPdfs(checkboxes, pdfLinks);
+    await downloadSelectedPdfs(checkboxes, pdfLinks, courseTitle);
     hideLoader();
     downloadingState = false;
   });

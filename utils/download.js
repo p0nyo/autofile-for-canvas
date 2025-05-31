@@ -1,4 +1,4 @@
-export async function downloadSelectedPdfs(checkboxes, pdfLinks) {
+export async function downloadSelectedPdfs(checkboxes, pdfLinks, courseTitle) {
   const zip = new JSZip();
   const fetchPromises = Array.from(checkboxes).map(async (cb) => {
     const idx = cb.dataset.index;
@@ -20,5 +20,7 @@ export async function downloadSelectedPdfs(checkboxes, pdfLinks) {
   });
 
   const zipBlob = await zip.generateAsync({ type: "blob" });
-  saveAs(zipBlob, "canvas_files.zip");
+  const zipFileName = courseTitle + "_module_files.zip";
+  
+  saveAs(zipBlob, zipFileName);
 }

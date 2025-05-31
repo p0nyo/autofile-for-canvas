@@ -1,6 +1,14 @@
 const FETCH_LIMIT = 30;
 const SELECTOR_MODULE_LINKS = 'a.ig-title.title.item_link';
 
+async function getCourseName() {
+    const courseTitleDiv = document.querySelector('a.mobile-header-title > div:first-of-type');
+    const unformattedCourseTitle = courseTitleDiv.textContent.trim();
+    const courseTitle = unformattedCourseTitle.replace(/\s+/g, "_");
+    
+    return courseTitle;
+}
+
 async function getModuleItemLinks() {
     const anchors = document.querySelectorAll(SELECTOR_MODULE_LINKS);
     
@@ -62,6 +70,7 @@ function extractPdfLinkFromHTML(html, baseUrl) {
 }
 
 async function initialise() {
+    const courseTitle = await getCourseName();
     const moduleItems = await getModuleItemLinks();
     console.log("Module Items:", moduleItems);
 
@@ -84,8 +93,9 @@ async function initialise() {
         .filter(link => link !== null);
 
     console.log("Found PDF Links:", pdfLinks);
+    console.log("Found Course Title:" + courseTitle);
     chrome.storage.local.clear(() => {
-        chrome.storage.local.set({ pdfLinks });
+        chrome.storage.local.set({ courseTitle, pdfLinks });
     })
 }
 
