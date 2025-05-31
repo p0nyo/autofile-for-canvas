@@ -72,6 +72,7 @@ function extractPdfLinkFromHTML(html, baseUrl) {
 async function initialise() {
     const courseTitle = await getCourseName();
     const moduleItems = await getModuleItemLinks();
+
     console.log("Module Items:", moduleItems);
 
     const modulePages = await fetchModulePagesWithLimit(

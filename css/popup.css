@@ -49,7 +49,7 @@ backdrop-filter: blur(5px);  /* this applies the blur */
 background-color: rgb(255, 255, 255, 0.5); /* Light gray, 40% opacity */
 z-index: 9998;  /* just below the loader */
 }
-.loader-text,
+#loader-text,
 .loader {
 position: fixed;
 top: 50%;
@@ -58,9 +58,9 @@ transform: translate(-50%, -50%);
 z-index: 9999;
 }
 
-.loader-text {
+#loader-text {
 font-size: 15px;
-top: 58%;
+top: 55%;
 }
 
 .spinner {

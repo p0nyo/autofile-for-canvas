@@ -1,5 +1,6 @@
-export function showLoader() {
+export function showLoader(textContent) {
   document.getElementById("loader-overlay").style.display = "block";
+  document.getElementById("loader-text").textContent = textContent;
   document.body.style.overflow = "hidden";
 }
 

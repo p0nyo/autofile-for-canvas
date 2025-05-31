@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const pdfLinks = await getPdfLinks();
 
       if (pdfLinks.length === 0) {
-        showLoader();
+        showLoader("Loading attachments...");
       } else {
         const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    showLoader();
+    showLoader("Please wait...");
     const pdfLinks = JSON.parse(currentPdfLinksJSON);
     await downloadSelectedPdfs(checkboxes, pdfLinks, courseTitle);
     hideLoader();
