@@ -1,5 +1,6 @@
 import { renderPdfList } from "./utils/domUtils.js";
 import { getPdfLinks, getCourseTitle } from "./utils/storage.js";
+import { filterBySuffix } from "./utils/filter.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
 import { showLoader, hideLoader } from "./utils/loader.js";
 
@@ -17,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
   });
 
-
   async function loadAndRender() {
       const pdfLinks = await getPdfLinks();
 
@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const newPdfLinksJSON = JSON.stringify(pdfLinks || []);
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
-          renderPdfList(container, pdfLinks);
+          const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
+
+          renderPdfList(container, updatedPdfLinks);
         }
         hideLoader();
       }

@@ -45,3 +45,5 @@ export function renderPdfList(container, pdfLinks) {
     container.appendChild(wrapper);
   });
 }
+
+export function renderPdfFilters() {}
