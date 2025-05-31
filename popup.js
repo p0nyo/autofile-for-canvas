@@ -1,4 +1,4 @@
-import { renderPdfList } from "./utils/domUtils.js";
+import { renderPdfFilters, renderPdfList, addFiltersToDom, renderResultsLength, getResultsLength } from "./utils/domUtils.js";
 import { getPdfLinks, getCourseTitle } from "./utils/storage.js";
 import { filterBySuffix } from "./utils/filter.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
@@ -6,6 +6,7 @@ import { showLoader, hideLoader } from "./utils/loader.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("pdf-list");
+  const topContainer = document.getElementById("fixed-top-bar");
   const selectAllCheckbox = document.getElementById("select-all");
   const downloadBtn = document.getElementById("download-zip");
 
@@ -28,8 +29,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
-
+          console.log(updatedPdfLinks);
+          renderPdfFilters(topContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
+          renderResultsLength(topContainer);
+          addFiltersToDom();
+          renderResultsLength(getResultsLength());
         }
         hideLoader();
       }

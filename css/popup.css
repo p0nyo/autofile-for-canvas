@@ -11,7 +11,7 @@ width: 500px;
 min-height: 800px; 
 margin: 0;
 padding: 10px;
-padding-top: 80px;
+padding-top: 140px;
 padding-bottom: 90px;
 font-family: 'Montserrat', sans-serif;
 overflow: auto;
@@ -27,12 +27,13 @@ position: fixed;
 top: 0;
 left: 0;
 right: 0;
-height: 50px;
+height: auto;
 background: white;
 border-bottom: 1px solid #ddd;
 display: flex;
-align-items: center;
-padding: 10px;
+flex-direction: column;
+align-items: start;
+padding: 10px 4px 6px 4px;
 z-index: 1000;
 box-shadow: 0 1px 5px rgba(0,0,0,0.1);
 }
@@ -45,6 +46,32 @@ box-shadow: 0 1px 5px rgba(0,0,0,0.1);
 label { display: block; margin-bottom: 6px; }
 
 .checkbox-label { margin-left: 6px; }
+
+.filter-button {
+    padding: 6px 10px;
+    background-color: #fcc6c2;
+    border-radius: 1px;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.results-length {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    line-height: 1em;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin-bottom: 6px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
 
 #loader-overlay {
 display: none;
