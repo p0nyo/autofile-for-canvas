@@ -1,3 +1,5 @@
+import { getCourseTitle } from "./storage.js";
+
 export function renderPdfList(container, pdfLinks) {
   container.innerHTML = "";
 
@@ -39,10 +41,8 @@ export function renderPdfList(container, pdfLinks) {
 }
 
 export function renderPdfFilters(container, suffixSet) {
-  const divWrapper = document.createElement("div");
-  divWrapper.style.display = "flex";
-  divWrapper.style.flex = "row";
-  divWrapper.style.gap = "6px";
+  container.innerHTML = "";
+
   const allWrapper = document.createElement("div");
 
   const all = document.createElement("p");
@@ -53,7 +53,7 @@ export function renderPdfFilters(container, suffixSet) {
   all.style.userSelect = "none";
 
   allWrapper.appendChild(all);
-  divWrapper.appendChild(allWrapper);
+  container.appendChild(allWrapper);
 
   suffixSet.forEach((suffix, index) => {
     console.log(index, suffix);
@@ -67,25 +67,27 @@ export function renderPdfFilters(container, suffixSet) {
     filter.style.userSelect = "none";
 
     wrapper.appendChild(filter);
-    divWrapper.appendChild(wrapper);
+    container.appendChild(wrapper);
   });
-  container.insertBefore(divWrapper, container.lastElementChild);
 }
 
-export function renderResultsLength(textContent) {
-  const resultsLength = document.getElementById("results-length");
-  resultsLength.textContent = `Showing ${textContent} result(s)`;
+export function renderResultsContent(courseTitle) {
+  const resultsLength = getResultsContent();
+  const formattedCourseTitle = courseTitle.replace(/_/g, " ");
+  const resultsContent = document.getElementById("results-content");
+  resultsContent.innerHTML = `Showing <strong>${resultsLength}</strong> result(s) for <strong>${formattedCourseTitle}</strong>`;
 }
 
-export function getResultsLength() {
+export function getResultsContent() {
   const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
     .filter(item => getComputedStyle(item).display === "flex");
   return visibleFlexItems.length;
 }
 
-export function addFiltersToDom() {
+export async function addFiltersToDom() {
   const filterButtons = document.querySelectorAll(".filter-button");
   const allButton = document.querySelector('.filter-button[data-index="all"]');
+  const courseTitle = await getCourseTitle();
 
   function updateVisibleFiles() {
     const isAllChecked = allButton.dataset.checked === "true";
@@ -143,7 +145,7 @@ export function addFiltersToDom() {
         allButton.style.backgroundColor = "#fcc6c2";
       }
       updateVisibleFiles();
-      renderResultsLength(getResultsLength());
+      renderResultsContent(courseTitle);
     });
 
   }
