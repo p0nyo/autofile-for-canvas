@@ -169,6 +169,9 @@ export async function addFiltersToDom(container, pdfLinks) {
 
       const searchInput = document.querySelector("#search-input");
       await updateFilteredAndSearchedList(container, pdfLinks, searchInput.value.trim());
+
+      const html = document.querySelector("html");
+      html.scrollTo({ top: 0 });
     });
   });
 }
