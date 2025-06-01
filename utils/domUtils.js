@@ -169,6 +169,9 @@ export async function addFiltersToDom(container, pdfLinks) {
 
       const searchInput = document.querySelector("#search-input");
       await updateFilteredAndSearchedList(container, pdfLinks, searchInput.value.trim());
+
+      const html = document.querySelector("html");
+      html.scrollTo({ top: 0 });
     });
   });
 }
@@ -180,6 +183,8 @@ export function addSearchBarLogic(container, pdfLinks) {
   searchInput.addEventListener("input", async () => {
     const query = searchInput.value.trim();
     await updateFilteredAndSearchedList(container, pdfLinks, query);
+    const html = document.querySelector("html");
+    html.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
 
