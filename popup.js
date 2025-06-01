@@ -30,11 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
-          console.log(updatedPdfLinks);
           renderPdfFilters(filterContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
-          addFiltersToDom();
           renderResultsContent(courseTitle);
+          addFiltersToDom();
         }
         hideLoader();
       }
