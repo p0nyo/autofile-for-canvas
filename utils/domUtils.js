@@ -78,12 +78,6 @@ export function renderResultsContent(courseTitle) {
   resultsContent.innerHTML = `Showing <strong>${resultsLength}</strong> result(s) for <strong>${formattedCourseTitle}</strong>`;
 }
 
-export function getResultsContent() {
-  const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
-    .filter(item => getComputedStyle(item).display === "flex");
-  return visibleFlexItems.length;
-}
-
 export async function addFiltersToDom() {
   const filterButtons = document.querySelectorAll(".filter-button");
   const allButton = document.querySelector('.filter-button[data-index="all"]');
@@ -150,4 +144,12 @@ export async function addFiltersToDom() {
 
   }
 }
+
+export function getResultsContent() {
+  const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
+    .filter(item => getComputedStyle(item).display === "flex");
+  return visibleFlexItems.length;
+}
+
+
 
