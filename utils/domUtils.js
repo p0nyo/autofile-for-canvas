@@ -23,7 +23,7 @@ export function renderPdfList(container, pdfLinks) {
     checkbox.style.marginRight = "12px";
     checkbox.style.pointerEvents = "none";
 
-    const p = document.createElement("p");
+    const p = document.createElement("span");
     p.textContent = link.text.replace(/^Download\s*/, "");
     p.style.pointerEvents = "none";
     p.style.fontSize = "16px";

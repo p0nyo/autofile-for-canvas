@@ -11,8 +11,8 @@ body {
     min-height: 800px; 
     margin: 0;
     padding: 10px;
-    padding-top: 140px;
-    padding-bottom: 90px;
+    padding-top: 190px;
+    padding-bottom: 60px;
     font-family: 'Montserrat', sans-serif;
     overflow: auto;
 }
@@ -48,6 +48,7 @@ body::-webkit-scrollbar {
 }
 
 #search-input {
+    font-family: 'Montserrat', sans-serif;
     width: 100%;
     box-sizing: border-box;
     padding: 8px;
@@ -87,7 +88,7 @@ body::-webkit-scrollbar {
 .file-item {
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 10px;
     margin-bottom: 6px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
