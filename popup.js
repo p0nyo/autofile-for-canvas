@@ -32,9 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
           renderPdfFilters(filterContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
+          // addSearchBarLogic(container, updatedPdfLinks);
+          addFiltersToDom(container, updatedPdfLinks);
           addSearchBarLogic(container, updatedPdfLinks);
           renderResultsContent(courseTitle);
-          addFiltersToDom();
+          // addFiltersToDom();
         }
         hideLoader();
       }
