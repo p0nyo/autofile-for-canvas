@@ -56,9 +56,18 @@ html::-webkit-scrollbar {
     font-size: 14px;
 }
 
-#search-input::placeholder {
-    font-family: 'Montserrat', sans-serif;
+input[type="text"] {
+  all: unset;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
+
+#search-input:focus {
+  outline: 2px solid #ff4e41; /* This changes the real outline */
+  outline-offset: 0px; /* Optional: distance between outline and element */
+}
+
 
 #suffix-filters {
     display: flex;
