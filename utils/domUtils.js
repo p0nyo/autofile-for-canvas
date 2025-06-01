@@ -1,6 +1,6 @@
 import { getCourseTitle } from "./storage.js";
 
-export function renderPdfList(container, pdfLinks) {
+export function renderPdfList(container, pdfLinks, highlight = "") {
   container.innerHTML = "";
 
   pdfLinks.forEach((link, index) => {
@@ -28,6 +28,14 @@ export function renderPdfList(container, pdfLinks) {
     p.style.pointerEvents = "none";
     p.style.fontSize = "16px";
     p.style.fontWeight = "400";
+
+    if (highlight) {
+      const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+      p.innerHTML = link.text.replace(/^Download\s*/, "").replace(regex, '<mark>$1</mark>');
+    } else {
+      p.textContent = link.text.replace(/^Download\s*/, "");
+    }
+
 
     wrapper.addEventListener("click", (e) => {
       if (e.target !== p) {
@@ -57,7 +65,6 @@ export function renderPdfFilters(container, suffixSet) {
   container.appendChild(allWrapper);
 
   suffixSet.forEach((suffix, index) => {
-    console.log(index, suffix);
     const wrapper = document.createElement("div");
 
     const filter = document.createElement("p");
@@ -150,6 +157,19 @@ export function getResultsContent() {
   const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
     .filter(item => getComputedStyle(item).display === "flex");
   return visibleFlexItems.length;
+}
+
+export function addSearchBarLogic(container, pdfLinks) {
+  const searchInput = document.querySelector("#search-input");
+
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.trim().toLowerCase();
+    console.log("Input changed:", query); 
+    const filteredLinks = pdfLinks.filter(link =>
+      link.text.toLowerCase().includes(query)
+    );
+    renderPdfList(container, filteredLinks, query);
+  });
 }
 
 

@@ -1,4 +1,4 @@
-import { renderPdfFilters, renderPdfList, addFiltersToDom, renderResultsContent, getResultsContent } from "./utils/domUtils.js";
+import { renderPdfFilters, renderPdfList, addFiltersToDom, renderResultsContent, addSearchBarLogic } from "./utils/domUtils.js";
 import { getPdfLinks, getCourseTitle } from "./utils/storage.js";
 import { filterBySuffix } from "./utils/filter.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
           renderPdfFilters(filterContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
+          addSearchBarLogic(container, updatedPdfLinks);
           renderResultsContent(courseTitle);
           addFiltersToDom();
         }
