@@ -1,6 +1,6 @@
 import { getCourseTitle } from "./storage.js";
 
-export function renderPdfList(container, pdfLinks) {
+export function renderPdfList(container, pdfLinks, highlight = "") {
   container.innerHTML = "";
 
   pdfLinks.forEach((link, index) => {
@@ -21,12 +21,24 @@ export function renderPdfList(container, pdfLinks) {
     checkbox.dataset.index = index;
     checkbox.style.accentColor = "red";
     checkbox.style.marginRight = "12px";
+    checkbox.style.pointerEvents = "none";
 
-    const p = document.createElement("p");
+    const p = document.createElement("span");
     p.textContent = link.text.replace(/^Download\s*/, "");
     p.style.pointerEvents = "none";
     p.style.fontSize = "16px";
     p.style.fontWeight = "400";
+    p.style.overflowWrap = "break-word";
+    p.style.wordBreak = "break-word";
+    p.style.whiteSpace = "normal";
+
+    if (highlight) {
+      const regex = new RegExp(`(${highlight.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+      p.innerHTML = link.text.replace(/^Download\s*/, "").replace(regex, '<mark>$1</mark>');
+    } else {
+      p.textContent = link.text.replace(/^Download\s*/, "");
+    }
+
 
     wrapper.addEventListener("click", (e) => {
       if (e.target !== p) {
@@ -56,7 +68,6 @@ export function renderPdfFilters(container, suffixSet) {
   container.appendChild(allWrapper);
 
   suffixSet.forEach((suffix, index) => {
-    console.log(index, suffix);
     const wrapper = document.createElement("div");
 
     const filter = document.createElement("p");
@@ -78,55 +89,72 @@ export function renderResultsContent(courseTitle) {
   resultsContent.innerHTML = `Showing <strong>${resultsLength}</strong> result(s) for <strong>${formattedCourseTitle}</strong>`;
 }
 
-export async function addFiltersToDom() {
-  const filterButtons = document.querySelectorAll(".filter-button");
+export function getResultsContent() {
+  const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
+    .filter(item => getComputedStyle(item).display === "flex");
+  return visibleFlexItems.length;
+}
+
+function getActiveFilters() {
   const allButton = document.querySelector('.filter-button[data-index="all"]');
+  if (allButton.dataset.checked === "true") {
+    return null; // means show all
+  }
+  return Array.from(document.querySelectorAll(".filter-button"))
+    .filter(btn => btn.dataset.checked === "true" && btn.dataset.index !== "all")
+    .map(btn => btn.textContent);
+}
+
+async function updateFilteredAndSearchedList(container, pdfLinks, searchQuery) {
   const courseTitle = await getCourseTitle();
+  const activeFilters = getActiveFilters();
 
-  function updateVisibleFiles() {
-    const isAllChecked = allButton.dataset.checked === "true";
-    const fileItems = document.querySelectorAll(".file-item");
+  let filteredLinks = pdfLinks;
 
-    if (isAllChecked) {
-      fileItems.forEach(item => {
-        item.style.display = "flex";
-      });
-    } else {
-      const activeFilters = Array.from(document.querySelectorAll(".filter-button"))
-        .filter(btn => btn.dataset.checked === "true" && btn.dataset.index !== "all")
-        .map(btn => btn.textContent);
-
-      fileItems.forEach(item => {
-        const suffix = item.dataset.suffix;
-        if (activeFilters.includes(suffix)) {
-          item.style.display = "flex";
-        } else {
-          item.style.display = "none";
-        }
-      });
-    }
+  // Apply filters if any
+  if (activeFilters) {
+    filteredLinks = filteredLinks.filter(link => activeFilters.includes(link.suffix));
   }
 
-  for (const filterButton of filterButtons) {
+  // Apply search filter if any
+  if (searchQuery) {
+    const lowerQuery = searchQuery.toLowerCase();
+    filteredLinks = filteredLinks.filter(link => link.text.toLowerCase().includes(lowerQuery));
+  }
+
+  renderPdfList(container, filteredLinks, searchQuery);
+  renderResultsContent(courseTitle);
+}
+
+export async function addFiltersToDom(container, pdfLinks) {
+  const filterButtons = document.querySelectorAll(".filter-button");
+  const allButton = document.querySelector('.filter-button[data-index="all"]');
+
+  filterButtons.forEach(filterButton => {
+    // Set initial styles for checked filters
     if (filterButton.dataset.checked === "true") {
       filterButton.style.backgroundColor = "#ff4e41";
+    } else {
+      filterButton.style.backgroundColor = "#fcc6c2";
     }
-    filterButton.addEventListener("click", () => {
+
+    filterButton.addEventListener("click", async () => {
       const isAll = filterButton.dataset.index === "all";
 
       if (isAll) {
         const newState = filterButton.dataset.checked === "false";
-
         filterButton.dataset.checked = newState ? "true" : "false";
         filterButton.style.backgroundColor = newState ? "#ff4e41" : "#fcc6c2";
 
-        [...filterButtons].forEach(btn => {
+        // Uncheck all other filters
+        filterButtons.forEach(btn => {
           if (btn.dataset.index !== "all") {
             btn.dataset.checked = "false";
             btn.style.backgroundColor = "#fcc6c2";
           }
         });
       } else {
+        // Toggle current filter
         if (filterButton.dataset.checked === "false") {
           filterButton.dataset.checked = "true";
           filterButton.style.backgroundColor = "#ff4e41";
@@ -134,22 +162,27 @@ export async function addFiltersToDom() {
           filterButton.dataset.checked = "false";
           filterButton.style.backgroundColor = "#fcc6c2";
         }
-
+        // Uncheck 'All'
         allButton.dataset.checked = "false";
         allButton.style.backgroundColor = "#fcc6c2";
       }
-      updateVisibleFiles();
-      renderResultsContent(courseTitle);
+
+      const searchInput = document.querySelector("#search-input");
+      await updateFilteredAndSearchedList(container, pdfLinks, searchInput.value.trim());
     });
-
-  }
+  });
 }
 
-export function getResultsContent() {
-  const visibleFlexItems = Array.from(document.querySelectorAll(".file-item"))
-    .filter(item => getComputedStyle(item).display === "flex");
-  return visibleFlexItems.length;
+// Add search input event listener
+export function addSearchBarLogic(container, pdfLinks) {
+  const searchInput = document.querySelector("#search-input");
+
+  searchInput.addEventListener("input", async () => {
+    const query = searchInput.value.trim();
+    await updateFilteredAndSearchedList(container, pdfLinks, query);
+  });
 }
+
 
 
 

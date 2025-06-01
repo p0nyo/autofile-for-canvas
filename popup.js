@@ -1,4 +1,4 @@
-import { renderPdfFilters, renderPdfList, addFiltersToDom, renderResultsContent, getResultsContent } from "./utils/domUtils.js";
+import { renderPdfFilters, renderPdfList, addFiltersToDom, renderResultsContent, addSearchBarLogic } from "./utils/domUtils.js";
 import { getPdfLinks, getCourseTitle } from "./utils/storage.js";
 import { filterBySuffix } from "./utils/filter.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
@@ -30,11 +30,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (newPdfLinksJSON !== currentPdfLinksJSON) {
           currentPdfLinksJSON = newPdfLinksJSON;
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
-          console.log(updatedPdfLinks);
           renderPdfFilters(filterContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
-          addFiltersToDom();
+          // addSearchBarLogic(container, updatedPdfLinks);
+          addFiltersToDom(container, updatedPdfLinks);
+          addSearchBarLogic(container, updatedPdfLinks);
           renderResultsContent(courseTitle);
+          // addFiltersToDom();
         }
         hideLoader();
       }
