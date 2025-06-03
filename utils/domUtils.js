@@ -111,12 +111,10 @@ async function updateFilteredAndSearchedList(container, pdfLinks, searchQuery) {
 
   let filteredLinks = pdfLinks;
 
-  // Apply filters if any
   if (activeFilters) {
     filteredLinks = filteredLinks.filter(link => activeFilters.includes(link.suffix));
   }
 
-  // Apply search filter if any
   if (searchQuery) {
     const lowerQuery = searchQuery.toLowerCase();
     filteredLinks = filteredLinks.filter(link => link.text.toLowerCase().includes(lowerQuery));
@@ -131,7 +129,6 @@ export async function addFiltersToDom(container, pdfLinks) {
   const allButton = document.querySelector('.filter-button[data-index="all"]');
 
   filterButtons.forEach(filterButton => {
-    // Set initial styles for checked filters
     if (filterButton.dataset.checked === "true") {
       filterButton.style.backgroundColor = "#ff4e41";
     } else {
@@ -146,7 +143,6 @@ export async function addFiltersToDom(container, pdfLinks) {
         filterButton.dataset.checked = newState ? "true" : "false";
         filterButton.style.backgroundColor = newState ? "#ff4e41" : "#fcc6c2";
 
-        // Uncheck all other filters
         filterButtons.forEach(btn => {
           if (btn.dataset.index !== "all") {
             btn.dataset.checked = "false";
@@ -154,7 +150,6 @@ export async function addFiltersToDom(container, pdfLinks) {
           }
         });
       } else {
-        // Toggle current filter
         if (filterButton.dataset.checked === "false") {
           filterButton.dataset.checked = "true";
           filterButton.style.backgroundColor = "#ff4e41";
@@ -162,7 +157,6 @@ export async function addFiltersToDom(container, pdfLinks) {
           filterButton.dataset.checked = "false";
           filterButton.style.backgroundColor = "#fcc6c2";
         }
-        // Uncheck 'All'
         allButton.dataset.checked = "false";
         allButton.style.backgroundColor = "#fcc6c2";
       }
@@ -176,7 +170,6 @@ export async function addFiltersToDom(container, pdfLinks) {
   });
 }
 
-// Add search input event listener
 export function addSearchBarLogic(container, pdfLinks) {
   const searchInput = document.querySelector("#search-input");
 
