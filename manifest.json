@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "AutoFile for Canvas",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Download attachments with ease on Canvas.",
     "permissions": ["storage"],
     "action": {
