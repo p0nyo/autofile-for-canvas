@@ -4,6 +4,7 @@ import { filterBySuffix } from "./utils/filter.js";
 import { downloadSelectedPdfs } from "./utils/download.js";
 import { showLoader, hideLoader } from "./utils/loader.js";
 
+
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("pdf-list");
   const filterContainer = document.getElementById("suffix-filters");
@@ -32,11 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const { pdfLinks: updatedPdfLinks, suffixSet } = filterBySuffix(pdfLinks);
           renderPdfFilters(filterContainer, suffixSet);
           renderPdfList(container, updatedPdfLinks);
-          // addSearchBarLogic(container, updatedPdfLinks);
           addFiltersToDom(container, updatedPdfLinks);
           addSearchBarLogic(container, updatedPdfLinks);
           renderResultsContent(courseTitle);
-          // addFiltersToDom();
         }
         hideLoader();
       }
