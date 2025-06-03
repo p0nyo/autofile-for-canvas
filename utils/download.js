@@ -1,8 +1,9 @@
 export async function downloadSelectedPdfs(checkboxes, pdfLinks, courseTitle) {
   const zip = new JSZip();
   const fetchPromises = Array.from(checkboxes).map(async (cb) => {
-    const idx = cb.dataset.index;
-    const { url, filename } = pdfLinks[idx];
+    const parent = cb.parentElement;
+    const url = parent.dataset.url;
+    const filename = parent.dataset.filename;
 
     try {
       const res = await fetch(url, { credentials: "include" });
@@ -16,6 +17,7 @@ export async function downloadSelectedPdfs(checkboxes, pdfLinks, courseTitle) {
 
   const results = await Promise.all(fetchPromises);
   results.forEach(file => {
+    console.log(file);
     if (file) zip.file(file.filename, file.blob);
   });
 

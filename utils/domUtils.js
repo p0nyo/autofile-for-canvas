@@ -7,6 +7,8 @@ export function renderPdfList(container, pdfLinks, highlight = "") {
     const wrapper = document.createElement("div");
     wrapper.className = "file-item";
     wrapper.dataset.suffix = link.suffix;
+    wrapper.dataset.url = link.url;
+    wrapper.dataset.filename = link.filename;
 
     wrapper.addEventListener("mouseenter", () => {
       wrapper.style.backgroundColor = "#e4e4e4";
@@ -122,6 +124,7 @@ async function updateFilteredAndSearchedList(container, pdfLinks, searchQuery) {
 
   renderPdfList(container, filteredLinks, searchQuery);
   renderResultsContent(courseTitle);
+  console.log(filteredLinks);
 }
 
 export async function addFiltersToDom(container, pdfLinks) {
@@ -166,6 +169,7 @@ export async function addFiltersToDom(container, pdfLinks) {
 
       const html = document.querySelector("html");
       html.scrollTo({ top: 0 });
+
     });
   });
 }
