@@ -1,9 +1,9 @@
 # AutoFile for Canvas
-A Google Chrome extension that helps you quickly preview and download PDF files from your Canvas course pages. It scans the modules page for PDF links, displays them in a popup, and allows you to select and download them as a ZIP file.
+A Google Chrome extension that helps you quickly preview and download PDF files from your Canvas modules pages. It scans the modules page for PDF links, displays them in a popup, and allows you to select and download them as a ZIP file.
 
 Link to the Chrome Web Store listing [here](https://chromewebstore.google.com/detail/autofile-for-canvas/jpnplafacbflagpapekkggknnecoijog?authuser=0&hl=en)
 
-## Features
+## 🎨 Features
 
 - Automatically detects all PDF links on the Canvas Modules page.
 - Preview PDFs before downloading using an in-popup viewer.
@@ -13,7 +13,7 @@ Link to the Chrome Web Store listing [here](https://chromewebstore.google.com/de
 - Clean and responsive popup UI.
 
 
-## Local Installation
+## 🔧 Local Installation
 
 1. Clone or download this repository.
 2. Open Chrome and go to `chrome://extensions/`
@@ -21,7 +21,7 @@ Link to the Chrome Web Store listing [here](https://chromewebstore.google.com/de
 4. Click **Load unpacked** and select the extension's folder.
 5. The extension icon should now appear in your toolbar!
 
-## Usage
+## 🚀 Usage
 
 1. Navigate to your Canvas course's **Modules** page.
 2. Click the **Canvas PDF Collector** icon in your Chrome toolbar.
@@ -50,16 +50,16 @@ autofile-for-canvas/
 ```
 
 ## 📦 Release History
-v1.1.1 (2025-06-04)
+**v1.1.1 (2025-06-04)**
 
-- Fixed major bug
+- Fixed major bug preventing users from downloading the correct file/s under filtered conditions
 
-v1.1.0 (2025-06-04)
+**v1.1.0 (2025-06-04)**
 
 - Added search and filtering functionality
-- Improved filter UX/UI and scroll behavior
+- Improved popup UX/UI and scroll behavior
 
-v1.0.0
+**v1.0.0 (2025-05-30)**
 
 - Initial release
 
