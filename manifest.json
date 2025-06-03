@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "AutoFile for Canvas",
-    "version": "1.0",
-    "description": "Select and batch download attachments on Canvas.",
+    "version": "1.1.0",
+    "description": "Download attachments with ease on Canvas.",
     "permissions": ["storage"],
     "action": {
         "default_popup": "popup.html",
