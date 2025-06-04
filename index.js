@@ -12,15 +12,37 @@ async function getCourseName() {
 async function getModuleItemLinks() {
     const anchors = document.querySelectorAll(SELECTOR_MODULE_LINKS);
     
+    function getModuleClassName(anchor) {
+        const parent = anchor.closest(".context_module_item");
+        if (!parent) return null;
+
+        const types = [
+            "wiki_page",
+            "attachment",
+            "assignment",
+            "quiz",
+            "external_url"
+        ];
+
+        for (const type of types) {
+            if (parent.classList.contains(type)) {
+            return type;
+            }
+        }
+
+        return null;
+    }
+
     const moduleItems = Array.from(anchors).map((a) => ({
         url: new URL(a.getAttribute('href'), window.location.origin).toString(),
-        text: a.textContent.trim()
+        text: a.textContent.trim(),
+        type: getModuleClassName(a)
     }));
 
     return moduleItems;
 }
 
-async function fetchModulePagesWithLimit(urls, limit = 5) {
+async function fetchModulePagesWithLimit(urls, types, limit = 5) {
     const results = [];
     let index = 0;
 
@@ -28,11 +50,12 @@ async function fetchModulePagesWithLimit(urls, limit = 5) {
         while (index < urls.length) {
         const currentIndex = index++;
         const url = urls[currentIndex];
+        const type = types[currentIndex];
 
         try {
             const res = await fetch(url, { credentials: "include" });
             const text = await res.text();
-            results[currentIndex] = { url, html: text };
+            results[currentIndex] = { url, type, html: text };
         } catch (err) {
             console.error(`Error fetching ${url}:`, err);
             results[currentIndex] = null;
@@ -46,11 +69,13 @@ async function fetchModulePagesWithLimit(urls, limit = 5) {
     return results.filter(Boolean);
 }
 
-function extractPdfLinkFromHTML(html, baseUrl) {
+function extractLinkFromHTML(html, baseUrl) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, "text/html");
 
     let anchor = doc.querySelector('a[download]');
+
+    console.log(anchor);
 
     if (!anchor) {
         anchor = Array.from(doc.querySelectorAll("a")).find((a) => 
@@ -77,13 +102,19 @@ async function initialise() {
 
     const modulePages = await fetchModulePagesWithLimit(
         moduleItems.map(item => item.url),
+        moduleItems.map(item => item.type),
         FETCH_LIMIT
     );
 
+    console.log("Module Pages:", modulePages);
+
     const pdfLinks = modulePages
-        .map(({ html, url }, index) => {
-        const result = extractPdfLinkFromHTML(html, url);
-        if (!result) return null;
+        .map(({ html, type, url }, index) => {
+        if (type === "attachment") {
+            const result = extractLinkFromHTML(html, url);
+            if (!result) return null;
+        }
+
 
         const { pdfUrl, filename } = result;
         if (!pdfUrl || !filename) return null;
@@ -104,3 +135,11 @@ async function initialise() {
 window.addEventListener("load", () => {
     initialise();
 });
+
+
+
+// wiki_page 
+// attachment
+// assignment
+// quiz
+// external_url
